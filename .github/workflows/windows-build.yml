@@ -33,6 +33,16 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Install wkhtmltopdf for README PDF
+        shell: pwsh
+        run: |
+          choco install wkhtmltopdf --no-progress -y
+          $exe = Get-ChildItem 'C:\Program Files\wkhtmltopdf' -Filter wkhtmltopdf.exe -Recurse -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+          if (-not $exe) { throw 'wkhtmltopdf.exe not found after installation' }
+          Add-Content -Path $env:GITHUB_PATH -Value $exe.DirectoryName
+          & $exe.FullName --version
+
       - name: Build unsigned package with Cake
         shell: pwsh
         run: dotnet run --project .\build\Build.csproj -- --target=Zip --skip-signing=true
