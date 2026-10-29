@@ -146,6 +146,10 @@ The manifest declares PerMonitorV2, asInvoker and uiAccess=false. Startup -v/--v
 writes rolling logs relative to the working directory, with daily/10MiB rollover
 and seven retained files. Account for the working directory when reproducing a launch.
 
+### GitHub Actions Windows package
+
+`.github/workflows/windows-build.yml` runs on `windows-latest` for manual dispatches and `v*` tags. It runs the Cake `Zip` target with `--skip-signing=true`, adds `NOTICE` and `LICENSE-MIT` to the package, uploads `publish/EVE-O Preview.zip` as an artifact, and creates a GitHub release on tags. Repository secrets `SIGNING_P12_BASE64` (base64 of the `.p12`) and `SIGNING_P12_PASSWORD` sign the extracted executable and Robin DLL with `signtool` before re-zipping; without them the package is unsigned and the release notes say so. The package stays framework-dependent and requires the .NET 10 runtime.
+
 ## Release-tooling side effects
 
 Read [Cake lifetime](../../../build/Lifetime.cs) and task sources before execution.

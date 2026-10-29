@@ -1,0 +1,104 @@
+name: Windows personal build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-personal-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+      SIGNING_P12_BASE64: ${{ secrets.SIGNING_P12_BASE64 }}
+      SIGNING_P12_PASSWORD: ${{ secrets.SIGNING_P12_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build unsigned package with Cake
+        shell: pwsh
+        run: dotnet run --project .\build\Build.csproj -- --target=Zip --skip-signing=true
+
+      - name: Add notices and optionally sign
+        id: package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $package = Join-Path $PWD 'publish\EVE-O Preview.zip'
+          if (-not (Test-Path -LiteralPath $package)) { throw "Package not found: $package" }
+
+          $expanded = Join-Path $env:RUNNER_TEMP 'eve-package'
+          if (Test-Path -LiteralPath $expanded) { Remove-Item -LiteralPath $expanded -Recurse -Force }
+          Expand-Archive -LiteralPath $package -DestinationPath $expanded -Force
+          Copy-Item -LiteralPath 'NOTICE' -Destination $expanded -Force
+          Copy-Item -LiteralPath 'LICENSE-MIT' -Destination $expanded -Force
+
+          $signed = $false
+          if ($env:SIGNING_P12_BASE64) {
+            $p12 = Join-Path $env:RUNNER_TEMP 'codesign.p12'
+            [IO.File]::WriteAllBytes($p12, [Convert]::FromBase64String($env:SIGNING_P12_BASE64))
+            $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+            if (-not $signtool) { throw 'signtool.exe not found' }
+            $files = Get-ChildItem -LiteralPath $expanded -File -Recurse | Where-Object { $_.Extension -in '.exe', '.dll' }
+            if (-not $files) { throw 'No signable files found' }
+            foreach ($file in $files) {
+              & $signtool sign /f $p12 /p $env:SIGNING_P12_PASSWORD /tr http://timestamp.digicert.com /td sha256 /fd sha256 $file.FullName
+              if ($LASTEXITCODE -ne 0) { throw "Signing failed: $($file.FullName)" }
+            }
+            Remove-Item -LiteralPath $p12 -Force
+            $signed = $true
+          }
+
+          Remove-Item -LiteralPath $package -Force
+          Compress-Archive -Path (Join-Path $expanded '*') -DestinationPath $package -Force
+          $status = if ($signed) { 'signed' } else { 'unsigned' }
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "signing=$status"
+          Write-Host "Package signing: $status"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EVE-O-Preview-personal
+          path: publish/EVE-O Preview.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $status = '${{ steps.package.outputs.signing }}'
+          $notes = @"
+          Personal build based on EveOPlus/eve-o-preview.
+
+          Signing: $status.
+          Upstream stable: https://github.com/EveOPlus/eve-o-preview/releases
+          "@
+          gh release view $tag 2>$null | Out-Null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag "publish/EVE-O Preview.zip" --clobber
+          } else {
+            gh release create $tag "publish/EVE-O Preview.zip" --title "Personal build $tag" --notes $notes
+          }
