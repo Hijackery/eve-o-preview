@@ -357,7 +357,9 @@ This is my personal build. Open issues only for the changes listed in [What is t
 
 ## Code signing
 
-Release binaries are submitted to the [SignPath Foundation](https://signpath.org/) code-signing service. SignPath verifies that the artifact was built from this public repository by GitHub Actions and keeps the signing key in its HSM. The upstream EveOPlus signing certificate does not authenticate this build.
+Release binaries are currently unsigned. Each release includes a SHA256 checksum; verify the downloaded ZIP before running it. The upstream EveOPlus signing certificate does not authenticate this build.
+
+Future builds can be signed with a code-signing certificate supplied through the `SIGNING_P12_BASE64` and `SIGNING_P12_PASSWORD` repository secrets.
 
 ## Contributing, credits and license
 
