@@ -1,0 +1,51 @@
+﻿//Eve-O Preview Plus is a program designed to deliver quality of life tooling. Primarily but not limited to enabling rapid window foreground and focus changes for the online game Eve Online.
+//Copyright (C) 2026  Aura Asuna
+//
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using EveOPreview.Configuration;
+using EveOPreview.Helper;
+using EveOPreview.Mediator.Messages;
+using MediatR;
+using Serilog;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace EveOPreview.Mediator.Handlers.Thumbnails
+{
+    public class ThumbnailToggleHideAllHandler : IRequestHandler<ThumbnailToggleHideAll>
+    {
+        private readonly IThumbnailConfiguration _thumbnailConfiguration;
+        private readonly IPublisher _publisher;
+        private readonly ILogger _logger;
+
+        public ThumbnailToggleHideAllHandler(IThumbnailConfiguration thumbnailConfiguration, IMediator publisher, ILogger logger)
+        {
+            _thumbnailConfiguration = thumbnailConfiguration;
+            _publisher = publisher;
+            _logger = logger;
+        }
+
+        public async Task Handle(ThumbnailToggleHideAll notification, CancellationToken ct)
+        {
+            bool isHidden = 
+                _thumbnailConfiguration.IsTemporarilyHidingAllThumbnails = 
+                !_thumbnailConfiguration.IsTemporarilyHidingAllThumbnails;
+            
+            _logger.WithCallerInfo().Verbose("ThumbnailToggleHideAll: All thumbnails are now {Status}", isHidden ? "HIDDEN" : "VISIBLE");
+            
+            await _publisher.Publish(new ThumbnailToggleHideAllChangedNotification(isHidden), ct);
+        }
+    }
+}

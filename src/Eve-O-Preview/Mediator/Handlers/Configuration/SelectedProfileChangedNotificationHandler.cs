@@ -1,0 +1,55 @@
+﻿//Eve-O Preview Plus is a program designed to deliver quality of life tooling. Primarily but not limited to enabling rapid window foreground and focus changes for the online game Eve Online.
+//Copyright (C) 2026  Aura Asuna
+//
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using EveOPreview.Configuration.Implementation;
+using EveOPreview.Helper;
+using EveOPreview.Mediator.Messages;
+using EveOPreview.Mediator.Messages.Process;
+using EveOPreview.Services.Interface;
+using MediatR;
+using Serilog;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace EveOPreview.Mediator.Handlers.Configuration;
+
+public class SelectedProfileChangedNotificationHandler : INotificationHandler<SelectedProfileChangedNotification>
+{
+    private readonly IGlobalEvents _globalEvents;
+    private readonly IMediator _mediator;
+    private readonly ILogger _logger;
+    private readonly ApplicationPreferences _preferences;
+
+    public SelectedProfileChangedNotificationHandler(IGlobalEvents globalEvents, IMediator mediator, ILogger logger, ApplicationPreferences preferences)
+    {
+        _globalEvents = globalEvents;
+        _mediator = mediator;
+        _logger = logger;
+        _preferences = preferences;
+    }
+
+    public async Task Handle(SelectedProfileChangedNotification notification, CancellationToken cancellationToken)
+    {
+        _logger.WithCallerInfo().Information("SelectedProfileChangedNotification: Profile changed to {ProfileLocation}", notification.NewProfileLocation);
+        _preferences?.SetLastProfile(notification.NewProfileLocation?.FriendlyName);
+        _globalEvents.PublishCurrentProfileChanged(notification);
+        await _mediator.Publish(new ThumbnailFontTitleSettingsUpdated(), cancellationToken);
+        await _mediator.Send(new ResetAllCpuAffinity(), cancellationToken);
+        // Installation/reuse applies both the current FPS targets (including disabled)
+        // and audio settings to each existing client.
+        await _mediator.Send(new SetAudioSettings(), cancellationToken);
+    }
+}

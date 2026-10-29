@@ -1,0 +1,17 @@
+EVE-O Preview - provenance and license notice
+
+This repository is a personal build based on the EveOPlus/eve-o-preview line.
+
+Original EVE-O Preview concept and codebase: the EVE-O Preview contributors.
+Original repository: https://bitbucket.org/ulph/eve-o-preview-git
+EveOPlus line: https://github.com/EveOPlus/eve-o-preview
+Separate MIT-licensed upstream fork: https://github.com/Proopai/eve-o-preview
+
+License:
+- The root LICENSE is the GNU General Public License, version 3.
+- The project README states that commits before b8b25d9 may still be used under MIT; subsequent commits are GPLv3.
+- The MIT permission notice for inherited code is reproduced in LICENSE-MIT. Its copyright line is:
+  Copyright (c) 2010-2016 StinkRay, Makari Aeron, CCP FoxFour, Anton V/ Kasyanov
+- Keep this notice and all copyright notices when redistributing.
+
+Verify the license of the exact upstream commit you fork before publishing. If you rebase this personal build onto the MIT-licensed Proopai fork, update the README license section and keep the MIT notice.

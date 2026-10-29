@@ -1,0 +1,353 @@
+# EVE-O Preview — personal build
+
+> **Personal build.** This is my personal fork of the EVE-O Preview codebase, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line and maintained for my own multi-monitor fleet. It is not an official build and not a replacement for upstream. For the stable, supported version, use the upstream [Releases](https://github.com/EveOPlus/eve-o-preview/releases). See [What is this?](#what-is-this) and [Credits](#contributing-credits-and-license).
+
+Keep an eye on your EVE characters and switch between them with a click or a hotkey. Arrange live previews, build character cycling groups, and tune frame rates and audio for your fleet.
+
+**The upstream project is free.** This personal build is shared as-is; see [What is this?](#what-is-this), [Issues and support](#issues-and-support) and [License](#license).
+
+[Download upstream release](https://github.com/EveOPlus/eve-o-preview/releases/latest) · [Upstream Discord](https://discord.gg/HzQHBtTEcB) · [Report an upstream bug](https://github.com/EveOPlus/eve-o-preview/issues)
+
+*This guide follows the current source; an older release may have the previous interface. Check your release notes when updating.*
+
+[What is this?](#what-is-this) | [Quick start](#start-here) | [Find a setting](#find-what-you-need) | [Cycling](#cycle-through-your-fleet) | [Themes](#themes-and-right-click-menus) | [Backups](#profiles-backups-and-updates) | [Troubleshooting](#troubleshooting-and-help)
+
+## What is this?
+
+This is my personal build of EVE-O Preview, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line. It is not an official build and it is not a replacement for upstream.
+
+My changes are limited to my own workflow: conditional preview raising when an EVE client gains focus, profile switching from the tray, an optional layout lock with a context-menu disable, bulk-add of all running clients to a cycle group, and remembering the last used profile at startup. I also carry the documentation and small fixes needed to keep those changes working for my setup.
+
+I do not provide general user support, I do not accept feature requests outside my own use case, and I do not promise that upstream bugs are fixed here.
+
+For the stable, supported version, use the upstream releases: [EveOPlus/eve-o-preview Releases](https://github.com/EveOPlus/eve-o-preview/releases). [Proopai/eve-o-preview](https://github.com/Proopai/eve-o-preview) is a separate upstream fork with its own releases; this repository does not claim to be its official successor.
+
+## Why does this exist?
+
+I run several EVE clients across a multi-monitor setup, and I wanted previews to come forward only when an EVE client is active, without pinning them above every other application. I also switch profiles often and prefer to do that from the tray, and I wanted a way to stop an accidental drag or right-click from rearranging my layout.
+
+Upstream is a good general-purpose tool; these are the small adjustments that fit the way I fly. I keep them here so I can update my build without maintaining a separate patch queue.
+
+## Start here
+
+1. Download the application ZIP from this repository's **Releases** tab if a personal build is published there, or from the [upstream Releases](https://github.com/EveOPlus/eve-o-preview/releases/latest) for the stable version. Extract the **whole archive** into a folder of your choice. Keep its companion files together.
+2. Install the **.NET 10 Runtime for Windows x64** from [Microsoft](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) if it is not already installed. The current application uses .NET 10. The developer SDK and Windows Desktop Runtime are not required.
+3. Set each EVE client's display mode to **Fixed Window** or **Window Mode**. Exclusive fullscreen is not supported by the previews.
+4. Run `EVE-O Preview.exe` and log in your characters. Either application can start first. If the settings window does not appear, double-click EVE-O's icon in the Windows system tray, including the hidden-icons area.
+5. Click a character's preview to switch to that client. Right-click a preview and choose **Move**, **Resize all**, or **Resize > Resize individual** to arrange it.
+6. Open **Previews & layout** to adjust size, titles and highlights. Open **Switching & hotkeys** to set up a character cycle.
+
+Use a Windows x64 system supported by .NET 10. EVE-O Preview requires Windows; Linux and macOS are not supported.
+
+**Already using EVE-O?** Back up your [profiles and global settings](#profiles-backups-and-updates), exit the old copy completely, then extract the new release. Use **Appearance → Legacy** for the familiar compact layout.
+
+### (Optional) Trust the EVE-O Preview root certificate
+
+> **Upstream certificate.** The certificate and signed release binaries described here come from the EveOPlus release pipeline. They do not authenticate this personal build unless it is signed with the same certificate. If you build this fork yourself, verify the binary through your own build process.
+
+Trust the EVE-O Preview root certificate to establish trust in its signing certificate. This may help with false positives and Microsoft Defender or SmartScreen warnings.
+
+Press **Windows+R**, type `powershell`, and press Enter. Paste the following command and accept the administrator prompt:
+
+```powershell
+Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command', '$ErrorActionPreference = ''Stop''; $certPath = Join-Path $env:TEMP ''EveoPreviewRootCA.crt''; try { Invoke-WebRequest -UseBasicParsing -Uri ''https://github.com/EveOPlus/eve-o-preview/releases/download/10.0.0.4/EveoPreviewRootCA.crt'' -OutFile $certPath; Import-Certificate -FilePath $certPath -CertStoreLocation ''Cert:\LocalMachine\Root'' } finally { Remove-Item -LiteralPath $certPath -ErrorAction SilentlyContinue }'
+```
+
+This downloads the project's public root certificate and adds it to the computer's **Trusted Root Certification Authorities** store, to trust the EVE-O Preview certificate authority. The temporary download is removed afterward. See Microsoft's [Import-Certificate documentation](https://learn.microsoft.com/en-us/powershell/module/pki/import-certificate) for details about the certificate store.
+
+**To remove this trust later:** Press **Windows+R**, enter `certlm.msc`, and accept the administrator prompt. Under **Trusted Root Certification Authorities > Certificates**, right-click **Eve-O Preview Root CA**, choose **Delete**, and confirm. Remove only this certificate. This leaves EVE-O Preview and your settings in place, but Windows security warnings may return. See Microsoft's [certificate manager instructions](https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-view-certificates-with-the-mmc-snap-in).
+
+## Find what you need
+
+| I want to… | Go to… |
+| --- | --- |
+| See my fleet at a glance | **Overview** |
+| Choose which characters have previews | **Clients** |
+| Create thumbnails for other applications | **Clients > Other applications > Add application** (Light/Dark) |
+| Dock thumbnails into reusable screen areas | **Regions** (Light/Dark) |
+| Cycle through EVE login screens | **Switching & hotkeys > Global shortcuts > Cycle login clients** (Light/Dark) |
+| Include linked login screens in a character cycle | Select a cycle group, then **Group shortcuts > Include login clients** (Light/Dark) |
+| Change preview size, opacity or hover zoom | **Previews & layout → Size & zoom** |
+| Customize character names, fonts, colors and borders | **Previews & layout → Title & highlight** |
+| Change visibility, window positioning or close-to-tray behavior | **Previews & layout → Window behavior** |
+| Lock preview layout or disable the right-click menu | **Previews & layout** |
+| Set cycling hotkeys or rearrange characters | **Switching & hotkeys** |
+| Limit FPS, manage CPU affinity or mute selected sounds | **Performance & audio** |
+| Clone, rename or switch configurations | Top **Profile** dropdown → **Manage profiles…** |
+| Show damage, repairs, systems or incoming-damage flashes | **Augments**; title/system placement is in **Title & highlight** |
+| Choose a theme or customize the thumbnail right-click menu | **Appearance** |
+| Open documentation, Discord or project information | **Help & about** |
+| Stop EVE-O completely | **Exit**, beside Help & about |
+
+**Can't find a setting?** Press **Ctrl+K** to search in the modern workspace. Search recognizes familiar names such as “thumbnail” and “overlay” as well as the new labels. Legacy has **About → More… → Search settings…**.
+
+## Everyday controls
+
+These gestures apply to the preview under your mouse.
+
+| Action | Control |
+| --- | --- |
+| Switch to a character | Left-click its preview |
+| Minimize that character | Ctrl+click, or right-click → **Minimize** |
+| Minimize every EVE client | Right-click → **Minimize all** |
+| Return to the last non-EVE application | Ctrl+Shift+click a preview |
+| Move a preview | Right-click → **Move**, then click to finish; holding the right mouse button also starts moving |
+| Bypass snapping while moving | Hold Shift; move farther from a snapped edge to break away |
+| Resize one preview | Right-click > **Resize > Resize individual**, then click to finish |
+| Resize all previews proportionally | Right-click > **Resize all**, then click to finish |
+| Select previews to move or resize together | Hold Shift and right-click each preview; selected previews have a yellow border |
+| Move or resize the selection | Choose **Move** or **Resize** in a selected preview's menu, then click to finish |
+| Remove a preview from the selection | Shift+right-click it again; a normal click outside the selection clears the group |
+| Undo the last preview edit | Right-click any preview and choose **Undo** (Light/Dark) |
+| Match one preview to its client | Right-click > **Resize > Reset aspect ratio to client** |
+| Maintain proportions for future resizing | Tick **Resize > Maintain aspect ratio** in any preview menu; applies to all previews |
+| Temporarily keep proportions and bypass snapping | Hold Shift during the resize |
+| Temporarily skip a character when cycling | Right-click → the skip-cycling option; select it again to re-enable |
+
+### Closing the window versus quitting
+
+**Close to the system tray** is enabled by default for new profiles. Clicking **X** hides the workspace and keeps EVE-O running. Double-click its tray icon to reopen it. The tray menu also lists profiles; choosing one switches immediately and asks before discarding unapplied edits. This setting also makes EVE-O start in the tray.
+
+Use **Exit** beside **Help & about**, or the tray menu's Exit action, to stop EVE-O completely. If you prefer X to quit, turn off **Close to the system tray**. An existing profile's saved preference is retained.
+
+### Saving changes
+
+Most switches save immediately. For fields with **Apply**, use Apply or Enter to commit your changes; **Discard** abandons unapplied edits. The preview editor can show draft title and highlight changes before you apply them. Follow the save status shown in the workspace, especially after a validation error.
+
+Switching profiles or quitting asks before discarding unapplied edits. Closing into the tray keeps those edits available.
+
+## Make previews work for you
+
+In **Previews & layout**:
+
+- **Size & zoom:** set shared preview dimensions and opacity, enable hover zoom, and choose the point that stays fixed as a preview grows.
+- **Title & highlight:** choose a font, style, text and outline colors, outline width and position. Set the active character's border independently. The compact title-and-border sample stays visible while you edit. **Actual size** and **Fit width** control its scale; scroll inside it to inspect large fonts or offsets. The active-character and skipped-marker sample controls sit together beneath it. The sample uses a logged-in character name, then a saved offline character, then "EVE - Sample Name"; you can edit the name for testing. It also tries to take a still from an open client for the background. The image stays in memory while EVE-O is open; **Refresh image** takes another still. If capture is unavailable, the title and border remain usable on a plain background.
+- **Window behavior:** keep previews on top, raise them when EVE regains focus without keeping them always on top, hide the active character's preview, hide previews when you leave EVE, or remember game window positions. Separate preview layouts can give each active character its own arrangement.
+
+The **Clients** page saves each character's preview visibility in the active profile. **Hide all previews** is a quick way to clear the screen without removing your layout.
+
+Turning off remembered game window positions or separate preview layouts clears the corresponding saved positions. Clone your profile first if you want to experiment and return to the old arrangement.
+
+### Arrange thumbnails with Regions
+
+Open **Regions** in Light or Dark and choose **Add region**. The monitor preview shows your display arrangement and region positions; click a region to select it. Turn on **Edit regions on screen** to show yellow boxes with outlines. Drag a box to move it; drag its edges or corners to resize it. Change its label with **Save name**. Position and size are edited directly on screen, within your preview size limits. Press Escape to leave edit mode.
+
+Select a region and tick one or more **Assigned clients**. The list combines clients in any cycle group with currently detected EVE clients and available selected applications; unrelated old history is excluded. Their thumbnails automatically take that region's position and size. Clients sharing a region overlap there and retain the normal active-preview ordering. Regions and assignments belong to the current profile and apply when assigned clients return. **Enable regions** turns the whole feature on or off, preserving templates and assignments while off.
+
+Region movement and resizing use **Snap previews together**, snapping to other regions, visible thumbnails and every monitor's edges. The same guides and magnetic breakaway apply to thumbnails. Hold Shift to bypass snapping; while resizing, Shift also preserves the starting proportions.
+
+With drag docking enabled, moving an individual thumbnail shows yellow region highlights. Move the pointer into or near a region; a stronger outline and **Release to dock** label mark the destination. Release to assign the thumbnail and match the region's position and size. This works with **Move**, right-click-and-hold dragging, and window-frame movement. Hold Shift to bypass docking.
+
+With **Dock and undock with right-click drag** enabled, hold a thumbnail's right mouse button and drag it to another highlighted region to transfer it. Dropping away from all regions undocks it at the new position. Turning this option off disables automatic docking and undocking; assigned thumbnails stay locked until you choose **Undock** from the right-click menu. Undock removes the assignment while keeping the current position and size, allowing free movement and resizing. Hover zoom, group selection and Resize all leave docked thumbnails in place. Docked thumbnails are borderless so they fit the yellow outline exactly.
+
+Turn off edit mode when finished. Leaving the Regions page, hiding the workspace or switching profiles closes the yellow boxes. **Remove region** removes its assignments and returns those clients to their saved individual layouts.
+
+### Preview other applications
+
+In Light or Dark, open **Clients > Other applications > Add application**. Click the dropdown to see running applications with a window. You can also type to jump to an application and press Enter to select it. Click **Add** to enable its thumbnails.
+
+All running instances of that executable receive thumbnails, labelled by process name and process ID (PID). The application selection is saved in the active profile. Instance positions and visibility use the current PID, so they do not carry over when an application restarts with a different PID. Use **Remove** to stop its previews.
+
+Applications must have a main window to preview; background-only processes are not listed. EVE clients are discovered automatically. FPS limiting, audio muting, CPU placement and thumbnail augments apply only to EVE clients, identified by their executable (`exefile.exe`).
+
+## Thumbnail augments
+
+In Light or Dark, open **Augments → Log setup** and enable **Read EVE logs**.
+Enable game-message and Local chat logging in EVE first. The usual log folder is
+detected automatically; an advanced folder picker supports other locations.
+If FC static data is missing, a popup asks before downloading. Cancelling leaves
+basic log reading and augments available; item-dependent simulation is disabled.
+
+**Thumbnail augments → All thumbnails** is the shared setup for the fleet.
+Simple mode starts with the Classic alpha + DPS theme and the current system
+below the character name. Advanced groups position/order, fonts and separate
+damage, weapon and repair colours/icons. Per-client settings are optional.
+The incoming indicator can blink or fade on the title, the whole thumbnail, or
+both, with one colour, interval, duration and NPC/player filter.
+
+Place the title/system in **Previews & layout → Title & highlight** and the DPS
+block in **Thumbnail augments → Advanced → Position & order**. Both offer nine
+positions; matching positions stack the title/system above DPS. Row order is
+configurable. **Simulate** uses standard T2 weapons/ammo or an NPC faction/ship
+and the real display path; temporary stats disappear when it stops.
+
+See the [Augments guide](src/docs/augments/README.md) for first-time setup,
+damage evidence, simulation, offline use and upgrading. Augments Overview opens
+each character's detailed damage, repair and travel history from a compact row.
+
+## Cycle through your fleet
+
+1. Open **Switching & hotkeys** and create or select a cycle group.
+2. Give it a useful name, such as DPS, Logi or Scouts.
+3. Add running characters to its order individually or use **Add all running**.
+4. Drag the rows into position. The arrow buttons remain available for small adjustments. Use the expand button at the top right of the character-order section for more room inside the current EVE-O window, then return when finished.
+5. Set forward and, optionally, backward hotkeys. Each direction supports an alternate binding. A group containing one character works as a direct switch to that character.
+
+Choose shortcuts that do not conflict with your normal EVE controls. If you want a shortcut to work while holding a modifier, configure that combination too.
+
+### Cycle at the login screen
+
+These options are available in Light and Dark, including when every EVE window is titled "Eve".
+
+**Use a dedicated login shortcut:** open **Switching & hotkeys > Global shortcuts** and record **Cycle login clients**. Each press selects the next EVE login window, ordered by its cached numeric account ID, or its PID when that account ID is unavailable. PID breaks ties. The sequence wraps and automatically excludes clients once their character name appears. This shortcut is unbound until configured.
+
+**Use your existing cycle group:** select a group and enable **Include login clients** under **Group shortcuts**. This is off by default and saved separately for each group. Its existing forward/backward shortcuts use the saved character order, with these rules:
+
+- A login window occupies a character's slot only when the cache links that process and character to the same account. A running named character takes precedence.
+- Each linked login window appears **once per cycle**, even if the group repeats the same character three times or includes three different characters from that account. It uses the first matching unavailable character's position in the saved order, in either direction; that character's Skip setting applies.
+- Missing links or multiple login processes on the same account are omitted from the group. The dedicated login shortcut can still reach those windows using its account/PID order.
+
+Both options switch windows only; they do not choose or log in a character.
+
+### Temporarily take a character out of the cycle
+
+If a character is back in station or otherwise out of the fight, use its skip control in the order editor or right-click its preview. Skipping applies to **all cycle groups in the current profile**, without removing the character or changing its place in the order.
+
+A red circle with a diagonal line appears beside its preview title by default. Choose another marker or color in **Title & highlight**. The marker remains visible even if character names are hidden. Re-enable the character when ready; skipping is temporary session state, tracked separately for each profile. It survives switching away and back, and resets when EVE-O restarts.
+
+## Themes and right-click menus
+
+Choose **Light**, **Dark** or **Legacy** in **Appearance**. The application theme applies to all profiles. Give a profile its own accent color in **Profiles** to make a change of configuration easier to spot; this is separate from character highlight colors.
+
+Legacy recreates the old compact settings layout. It is a theme of the new UI, so some controls are updated while familiar settings remain in approximately their original positions.
+
+### Coming from the old interface?
+
+| Old tab | Modern location |
+| --- | --- |
+| General | **Previews & layout → Window behavior**; CPU affinity is under **Performance & audio** |
+| Thumbnail | **Previews & layout → Size & zoom** |
+| Zoom | **Previews & layout → Size & zoom** |
+| Overlay | **Previews & layout → Title & highlight** |
+| Active Clients | **Clients** |
+| Cycle Groups | **Switching & hotkeys** |
+| FPS / Audio | **Performance & audio** |
+| Profiles | **Profiles** |
+| About | **Help & about** |
+
+In Legacy, the theme selector is at the bottom left. Additional settings, including menu customization, are under **About → More…**.
+
+### Customize the thumbnail menu
+
+Open **Appearance → Thumbnail right-click menu**. Drag actions and divider rows to reorder them, insert or remove dividers, and choose a menu theme independently of the workspace. Styles include Graphite, Midnight, OLED Black, Nebula, EVE Carbon and the four empire-inspired palettes, as well as Light and Dark.
+
+The default modern menu order is Minimize, Minimize all, a divider, Skip cycling, another divider, Move, Resize all and Resize. Both Resize all and the Resize submenu can be reordered at the root. **Reset** restores that layout. With Minimize first, a quick double right-click can open the menu and select Minimize. Put Skip cycling first if you prefer that action under the pointer.
+
+Only one thumbnail menu stays open at a time. Opening another closes the previous menu. Click outside the menu, or click its thumbnail again, to dismiss it. Clicks inside nested menus remain available, including the quick second-right-click action.
+
+In Light and Dark, **Resize > Resize individual** changes only the clicked preview. **Reset aspect ratio to client** also affects only that preview, matching the current client area while keeping its width where size limits allow. Restore a minimized client first if this action is unavailable. **Reset to default size** removes that preview's individual size override.
+
+To arrange a group in Light or Dark, hold **Shift** and **right-click** each preview. Selected previews stay outlined in **yellow**, even when active-client highlighting is off. Their group menu offers **Move**, **Resize**, **Reset Aspect Ratio**, **Reset Size**, and **Skip Cycling** or **Resume Cycling** when applicable. Shift+right-click also selects a preview underneath an open menu; the new menu opens after release. Move keeps the spacing between selected previews; Resize scales their sizes together, preserving each preview's proportions and position, and stops when any member reaches a size limit. Unselected previews, offline sizes and the default size stay unchanged. Click to finish, or hold the right button on an already selected preview to move the group and release to finish.
+
+**Reset Aspect Ratio** matches each selected preview to its own client; it is unavailable if any selected client's dimensions cannot be read (for example, while minimized). **Reset Size** removes only the selected previews' size overrides. **Skip Cycling** appears only when none of the selection is skipped; **Resume Cycling** appears only when all are skipped. Mixed selections show neither action. The change applies to every selected character for this session.
+
+Shift+right-click again to remove a member. A normal left-click, or a normal click outside the selected previews and their menu, clears selection. Selection is temporary; resulting sizes and positions use the current profile's normal save behavior. Selected previews do not hover-zoom. Legacy keeps its existing gestures and menu.
+
+**Undo** appears in the single and group right-click menus after a move, resize, aspect/size reset or Skip/Resume action. It restores the most recent edit, including every member of a group or a Resize all operation, in one step. A click without movement keeps the previous Undo available. History lasts for this session and clears when applying a profile or when an affected client closes or changes character; there is no redo or multi-step history.
+
+**Maintain aspect ratio** is shared by all thumbnails and saved in the current profile. It preserves each thumbnail's starting proportions during future individual, window-border and numeric size changes. **Resize all** always scales all previews, including saved sizes for offline clients, by a common factor, retaining their relative sizes and aspect ratios. Scaling stops when any preview reaches a configured size limit. Positions stay fixed. Sizes and the shared checkbox survive normal saves, restart and profile switching; old profiles use the default size with the checkbox off.
+
+Moving and resizing use **Snap previews together**, including window-border gestures, with targets at nearby preview edges and every monitor's edges. A ratio lock keeps proportions while snapping; hold Shift to bypass snapping temporarily. Resize all snaps to neighbours' fixed left/top edges because their right/bottom edges also move during scaling; all monitor edges remain targets. Minimum and maximum dimensions still apply. If a client ratio cannot fit both limits, the nearest permitted dimensions are used. Legacy retains its existing direct Resize action; use Light or Dark for the individual resize submenu.
+
+## Performance and audio
+
+**Performance & audio** provides separate FPS limits for the active client, background clients and the predicted next client in a cycle. Enable **Limit client frame rates** to apply them. A limit of **0** means unlimited. Very low background limits can make switching feel less responsive, so adjust them while flying your normal number of clients.
+
+Automatic CPU affinity assigns processor resources according to active and predicted client roles. Selective muting includes **Mute Jump Gate Tunnel** and **Mute Asteroid Belt Warp In**. Advanced users can enter a comma-separated list of custom audio event IDs.
+
+## Profiles, backups and updates
+
+Profiles hold gameplay settings, preview layouts, cycle groups, character visibility and a profile accent. Use the top **Profile** dropdown to switch setups. Choose **Manage profiles…** at the bottom of that dropdown to clone a working setup before experimenting, rename it or delete a profile you no longer need. Legacy keeps its **Profiles** tab. **Default** cannot be deleted. EVE-O remembers the last profile you used and falls back to Default if that profile is missing or was renamed outside the app.
+
+Application theme, thumbnail-menu layout/style and Augments settings/history are global, shared across profiles.
+
+### Where settings are stored
+
+EVE-O looks for an existing `Profiles` folder beside its executable first, then under `%LOCALAPPDATA%\Eve-O Preview`. With no existing profiles, it tries to create them beside the executable and falls back to Local AppData when that location is not writable, such as a protected Program Files installation.
+
+| Data | Location |
+| --- | --- |
+| Each profile | `Profiles\<profile name>\EVE-O Preview.json` |
+| Global preferences | `EVE-O Preview.settings.json`, beside the resolved Profiles folder, with a Local AppData fallback if needed |
+| Combat history | `Logs\Combat.sqlite`, beside global preferences; local SQLite with automatic upgrades |
+| Offline static data | `StaticData`, beside global preferences; reusable after upgrading |
+
+To back up or move your setup, **Exit EVE-O**, then copy the entire `Profiles` folder, global settings file, `Logs` and `StaticData` directories. Keep those files when updating the application. If settings appear to be missing, check both storage locations and whether you launched a different copy of EVE-O.
+
+### Advanced settings
+
+All configurable options are available in EVE-O's settings window. You do not need to edit JSON files. Changes below belong to the selected profile.
+
+In **Previews & layout → Advanced**, you can configure:
+
+| Setting | What it does |
+| --- | --- |
+| Snap previews together | Align previews and region editors to nearby edges and screen boundaries, with visible guides; hold Shift to bypass |
+| Delay before hiding | Wait before hiding previews outside EVE; enter seconds, rounded up to the next client check |
+| Resize limits | Set minimum and maximum width and height together; the current preview size adjusts to fit |
+| Client check interval | Check for clients and update preview properties every 300–1000 ms; this does **not** control game FPS or the live preview frame rate |
+| Use compatibility capture | Use slower still-image previews when live previews do not work; changing this recreates preview windows |
+| Login preview position | Set the position of login-screen previews, including negative coordinates for monitors above or left of the main display |
+
+Use **Apply changes** to save. The hide delay is counted in client checks, so review its displayed duration if you change the check interval. In **Legacy**, open **Thumbnail → Advanced preview settings** (also available from General).
+
+For individual characters, open **Clients → Character colors & minimization**. Choose a known character or type an offline character name and select **Edit**. You can:
+
+- Give the character its own active border color using the palette, custom color picker or color code. Highlighting must be enabled in **Title & highlight**.
+- Select **Use the profile's border color** to remove its color override.
+- Select **Keep open when switching characters** to exempt it from automatic minimization. Manual minimize actions still work.
+
+Select **Save character settings** to apply, or **Discard character edits** to undo unapplied changes. In Legacy, open **Active Clients → Colors / priority**. The title editor also links to these character settings, and setting search includes the old JSON property names.
+
+## Troubleshooting and help
+
+| Problem | Check first |
+| --- | --- |
+| EVE-O is running but there is no settings window | Double-click its system tray icon; check Windows' hidden-icons area |
+| A character's preview is missing | Check **Clients**, **Hide all previews**, and the visibility settings in **Window behavior** |
+| A preview is black or not updating | Confirm EVE is in Fixed Window or Window Mode and restore the game window; if it persists, report your display mode and whether the client was minimized |
+| A character is missing from cycling | Check group membership, order and the temporary skip marker |
+| A title looks different from the editor | Apply the changes, check Actual size versus Fit width, and check for a per-character active border override |
+| A setting did not save | Look for Apply, validation feedback or Retry; confirm the active profile |
+| The application asks for a runtime | Install the **Windows x64 .NET 10 Desktop Runtime**, not only the base .NET or ASP.NET runtime |
+| Settings disappeared after moving or updating | Check both the portable and Local AppData storage locations above |
+
+For help, [pop into Discord and say hi](https://discord.gg/HzQHBtTEcB). To [report a bug](https://github.com/EveOPlus/eve-o-preview/issues), include the version from **Help & about**, steps to reproduce, theme, number of clients and relevant display settings. The included **Launch Eve-O Preview with Verbose Logging.cmd** can collect more detail. Review logs before sharing them because they can contain character names and local paths.
+
+ESI character login is not available yet. Log-based combat statistics, simulation and thumbnail configuration are available in Augments.
+
+## Say thanks in New Eden
+
+I love investing my time in EVE-O so you can enjoy yours. An ISK gift means less time grinding and more time to improve the tool, help fellow pilots, and undock for some pew pew.
+
+If you would like to send a gift, search for **Aura Asuna** in EVE, open the character's menu and choose **Give Money**. Character ID: **95465272**. You can also open **Say thanks → Learn more** in the workspace for the donation details and a button to copy the name.
+
+Every feature is free, and donations are always optional. Thanks for flying with EVE-O. See you in New Eden!
+
+Aura Asuna o7
+
+## EVE Online and third-party tools
+
+EVE-O switches focus between clients; it does not broadcast your keyboard or mouse input to multiple clients. Use it in accordance with [EVE Online's EULA](https://www.eveonline.com/legal/eula). Historical comments about older EVE-O versions are not approval of every feature in the current application. Report any behavior that may violate the rules to the maintainer.
+
+## Issues and support
+
+This is a personal build. Open issues only for the changes listed in [What is this?](#what-is-this). Bugs in the upstream code should go to [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview/issues) or the relevant upstream fork. I may not respond to general support requests.
+
+## Contributing, credits and license
+
+For source navigation and development instructions, start with [src/README.md](src/README.md). The [build and test guide](src/docs/ai/build-and-test.md) covers the current .NET projects, Windows validation and release tooling.
+
+### Credits
+
+- Original EVE-O Preview concept and codebase: the EVE-O Preview contributors. The upstream MIT notice credits **StinkRay**, **Makari Aeron**, **CCP FoxFour** and **Anton V/ Kasyanov** (2010-2016). Previous maintainers include **Phrynohyas Tig-Rah**; the EveOPlus line is maintained by **Aura Asuna**.
+- Original repository: [ulph/eve-o-preview-git](https://bitbucket.org/ulph/eve-o-preview-git) · [EVE forum thread](https://forums.eveonline.com/t/4202)
+- Current base for this personal build: [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview).
+- Separate upstream fork: [Proopai/eve-o-preview](https://github.com/Proopai/eve-o-preview). Check its README and license before using it as a base.
+- This personal build: maintained by me in this repository. All credit for the original concept and codebase goes to the people above; my changes are limited to the items listed in [What is this?](#what-is-this).
+
+### License
+
+Copyright © 2026 Aura Asuna for the EveOPlus line. This repository is distributed under [GNU GPLv3](src/Eve-O-Preview/LICENSE.txt), without warranty. Commits prior to `b8b25d9` may still be used under MIT; subsequent commits are provided under GPLv3. The MIT permission notice for inherited code is preserved in [LICENSE-MIT](LICENSE-MIT); see [NOTICE](NOTICE) for provenance. Verify the license of the exact upstream commit you fork before publishing; if you rebase onto the MIT-licensed Proopai fork, update this section and keep the MIT notice.
+
+EVE Online and its associated names, logos, artwork and characters are the intellectual property of Fenris Creations (FC). EVE-O Preview is an independent project and is not affiliated with or endorsed by Fenris Creations (FC). All other trademarks belong to their respective owners.

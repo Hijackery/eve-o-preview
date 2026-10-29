@@ -1,0 +1,48 @@
+﻿//Eve-O Preview Plus is a program designed to deliver quality of life tooling. Primarily but not limited to enabling rapid window foreground and focus changes for the online game Eve Online.
+//Copyright (C) 2026  Aura Asuna
+//
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System;
+using Microsoft.Win32.SafeHandles;
+
+namespace EveOPreview.Services.Implementation
+{
+    sealed class ProcessInfo : IProcessInfo, IDisposable
+    {
+        public ProcessInfo(IntPtr mainWindowHandle, IntPtr processHandle, int processId, string title, string processName = "")
+        {
+            this.MainWindowHandle = mainWindowHandle;
+            this.OwnedHandle = new SafeProcessHandle(processHandle, ownsHandle: true);
+            this.ProcessId = processId;
+            this.Title = title;
+            ProcessName = processName;
+        }
+
+        /// <inheritdoc/>
+        public IntPtr MainWindowHandle { get; }
+
+        /// <inheritdoc/>
+        public IntPtr ProcessHandle => OwnedHandle.IsClosed ? IntPtr.Zero : OwnedHandle.DangerousGetHandle();
+        internal SafeProcessHandle OwnedHandle { get; private set; }
+
+        internal ProcessInfo WithTitle(string title) => new ProcessInfo(MainWindowHandle, IntPtr.Zero, ProcessId, title, ProcessName) { OwnedHandle = OwnedHandle };
+        public void Dispose() => OwnedHandle.Dispose();
+
+        public string Title { get; }
+
+        public int ProcessId { get; }
+        public string ProcessName { get; }
+    }
+}
