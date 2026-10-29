@@ -13,7 +13,7 @@ Keep an eye on your EVE characters and switch between them with a click or a hot
 
 **The upstream project is free.** I share this personal build as-is; see [What is this?](#what-is-this) and [Issues and support](#issues-and-support).
 
-[Download upstream release](https://github.com/EveOPlus/eve-o-preview/releases/latest) · [Upstream Discord](https://discord.gg/HzQHBtTEcB) · [Report an upstream bug](https://github.com/EveOPlus/eve-o-preview/issues)
+[Download personal build](https://github.com/Hijackery/eve-o-preview/releases/latest) · [Download upstream release](https://github.com/EveOPlus/eve-o-preview/releases/latest) · [Upstream Discord](https://discord.gg/HzQHBtTEcB) · [Report an upstream bug](https://github.com/EveOPlus/eve-o-preview/issues)
 
 *This guide follows the current source; an older release may have the previous interface. Check your release notes when updating.*
 
@@ -59,7 +59,7 @@ The settings UI is Avalonia and portable, but preview capture, focus switching, 
 
 ## Start here
 
-1. Download the application ZIP from this repository's **Releases** tab if a personal build is published there, or from the [upstream Releases](https://github.com/EveOPlus/eve-o-preview/releases/latest) for the stable version. Extract the **whole archive** into a folder of your choice. Keep its companion files together.
+1. Download `EVE-O-Preview-personal.zip` from [this repository's Releases](https://github.com/Hijackery/eve-o-preview/releases/latest) and verify its SHA256 checksum, or use the [upstream release](https://github.com/EveOPlus/eve-o-preview/releases/latest) for the stable version. Extract the **whole archive** into a folder of your choice. Keep its companion files together.
 2. Install the **.NET 10 Runtime for Windows x64** from [Microsoft](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) if it is not already installed. The current application uses .NET 10. The developer SDK and Windows Desktop Runtime are not required.
 3. Set each EVE client's display mode to **Fixed Window** or **Window Mode**. Exclusive fullscreen is not supported by the previews.
 4. Run `EVE-O Preview.exe` and log in your characters. Either application can start first. If the settings window does not appear, double-click EVE-O's icon in the Windows system tray, including the hidden-icons area.

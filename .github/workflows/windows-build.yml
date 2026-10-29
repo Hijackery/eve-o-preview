@@ -80,9 +80,12 @@ jobs:
 
           Remove-Item -LiteralPath $package -Force
           Compress-Archive -Path (Join-Path $expanded '*') -DestinationPath $package -Force
-          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $package).Hash.ToLowerInvariant()
-          $checksum = Join-Path $PWD 'publish\EVE-O Preview.zip.sha256'
-          [IO.File]::WriteAllText($checksum, "$hash  EVE-O Preview.zip`r`n")
+          $releaseName = 'EVE-O-Preview-personal.zip'
+          $releasePackage = Join-Path $PWD ('publish\' + $releaseName)
+          Move-Item -LiteralPath $package -Destination $releasePackage -Force
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $releasePackage).Hash.ToLowerInvariant()
+          $checksum = Join-Path $PWD ('publish\' + $releaseName + '.sha256')
+          [IO.File]::WriteAllText($checksum, "$hash  $releaseName`r`n")
           $status = if ($signed) { 'signed' } else { 'unsigned' }
           Add-Content -Path $env:GITHUB_OUTPUT -Value "signing=$status"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "sha256=$hash"
@@ -94,8 +97,8 @@ jobs:
         with:
           name: EVE-O-Preview-personal
           path: |
-            publish/EVE-O Preview.zip
-            publish/EVE-O Preview.zip.sha256
+            publish/EVE-O-Preview-personal.zip
+            publish/EVE-O-Preview-personal.zip.sha256
           if-no-files-found: error
           retention-days: 14
 
@@ -112,12 +115,13 @@ jobs:
           Personal build based on EveOPlus/eve-o-preview.
 
           Signing: $status.
+          Asset: EVE-O-Preview-personal.zip
           SHA256: $hash
           Upstream stable: https://github.com/EveOPlus/eve-o-preview/releases
           "@
           gh release view $tag 2>$null | Out-Null
           if ($LASTEXITCODE -eq 0) {
-            gh release upload $tag "publish/EVE-O Preview.zip" "publish/EVE-O Preview.zip.sha256" --clobber
+            gh release upload $tag "publish/EVE-O-Preview-personal.zip" "publish/EVE-O-Preview-personal.zip.sha256" --clobber
           } else {
-            gh release create $tag "publish/EVE-O Preview.zip" "publish/EVE-O Preview.zip.sha256" --title "Personal build $tag" --notes $notes
+            gh release create $tag "publish/EVE-O-Preview-personal.zip" "publish/EVE-O-Preview-personal.zip.sha256" --title "Personal build $tag" --notes $notes
           }
