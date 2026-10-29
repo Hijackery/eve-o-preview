@@ -28,7 +28,7 @@ internal sealed class SmokeBackend : IWorkspaceBackend, IWorkspaceApplications, 
     }
 
     private WorkspaceSnapshot _snapshot = new(
-        "Multibox fleet", "10.1.0.13", "Light", false,
+        "Multibox fleet", "10.1.0.34", "Light", false,
         new Dictionary<string, string>
         {
             ["MinimizeToTray"] = "true",

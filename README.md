@@ -43,6 +43,14 @@ Upstream covers the general case well. These are the adjustments I need for my o
 - Cycle groups, hotkeys and login-client support.
 - FPS, audio and CPU controls for multiboxing.
 
+## Screenshots
+
+![Overview](assets/screenshot-overview.png)
+
+![Previews and layout](assets/screenshot-previews.png)
+
+These renders come from the headless UI smoke with synthetic profiles. They are not live EVE clients.
+
 ## Platform support
 
 Windows 10 and 11 on x64. The preview host uses Win32, DWM/DirectComposition, global input hooks and a native DLL injected into the EVE client. Linux and macOS are not supported.
