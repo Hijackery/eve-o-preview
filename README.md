@@ -334,6 +334,10 @@ EVE-O switches focus between clients; it does not broadcast your keyboard or mou
 
 This is a personal build. Open issues only for the changes listed in [What is this?](#what-is-this). Bugs in the upstream code should go to [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview/issues) or the relevant upstream fork. I may not respond to general support requests.
 
+## Code signing
+
+Release binaries are submitted to the [SignPath Foundation](https://signpath.org/) code-signing service. SignPath verifies that the artifact was built from this public repository by GitHub Actions and keeps the signing key in its HSM. The upstream EveOPlus signing certificate does not authenticate this personal build.
+
 ## Contributing, credits and license
 
 For source navigation and development instructions, start with [src/README.md](src/README.md). The [build and test guide](src/docs/ai/build-and-test.md) covers the current .NET projects, Windows validation and release tooling.
@@ -351,3 +355,5 @@ For source navigation and development instructions, start with [src/README.md](s
 Copyright © 2026 Aura Asuna for the EveOPlus line. This repository is distributed under [GNU GPLv3](src/Eve-O-Preview/LICENSE.txt), without warranty. Commits prior to `b8b25d9` may still be used under MIT; subsequent commits are provided under GPLv3. The MIT permission notice for inherited code is preserved in [LICENSE-MIT](LICENSE-MIT); see [NOTICE](NOTICE) for provenance. Verify the license of the exact upstream commit you fork before publishing; if you rebase onto the MIT-licensed Proopai fork, update this section and keep the MIT notice.
 
 EVE Online and its associated names, logos, artwork and characters are the intellectual property of Fenris Creations (FC). EVE-O Preview is an independent project and is not affiliated with or endorsed by Fenris Creations (FC). All other trademarks belong to their respective owners.
+
+Privacy: [PRIVACY.md](PRIVACY.md).
