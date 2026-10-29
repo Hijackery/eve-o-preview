@@ -1,6 +1,6 @@
 # Privacy
 
-EVE-O Preview — personal build does not collect telemetry, analytics, crash reports or personal data, and does not send user data to the maintainer.
+This personal build of EVE-O Preview does not collect telemetry, analytics, crash reports or personal data, and does not send user data to the maintainer.
 
 - Profiles, settings, preview layouts, caches and logs are stored locally on your computer.
 - The application may read local EVE Online client files and logs to show previews, identity information and combat-log augments. These files stay on your computer.

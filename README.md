@@ -1,10 +1,10 @@
-# EVE-O Preview — personal build
+# EVE-O Preview (personal build)
 
-> **Personal build.** This is my personal fork of the EVE-O Preview codebase, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line and maintained for my own multi-monitor fleet. It is not an official build and not a replacement for upstream. For the stable, supported version, use the upstream [Releases](https://github.com/EveOPlus/eve-o-preview/releases). See [What is this?](#what-is-this) and [Credits](#contributing-credits-and-license).
+> **Personal build.** This is my own EVE-O Preview fork for a multi-monitor fleet, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line. It is not an official release. For the stable version, use the upstream [Releases](https://github.com/EveOPlus/eve-o-preview/releases).
 
 Keep an eye on your EVE characters and switch between them with a click or a hotkey. Arrange live previews, build character cycling groups, and tune frame rates and audio for your fleet.
 
-**The upstream project is free.** This personal build is shared as-is; see [What is this?](#what-is-this), [Issues and support](#issues-and-support) and [License](#license).
+**The upstream project is free.** I share this personal build as-is; see [What is this?](#what-is-this) and [Issues and support](#issues-and-support).
 
 [Download upstream release](https://github.com/EveOPlus/eve-o-preview/releases/latest) · [Upstream Discord](https://discord.gg/HzQHBtTEcB) · [Report an upstream bug](https://github.com/EveOPlus/eve-o-preview/issues)
 
@@ -14,19 +14,19 @@ Keep an eye on your EVE characters and switch between them with a click or a hot
 
 ## What is this?
 
-This is my personal build of EVE-O Preview, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line. It is not an official build and it is not a replacement for upstream.
+My own build of EVE-O Preview, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line. It is not official and it is not meant to replace upstream.
 
-My changes are limited to my own workflow: conditional preview raising when an EVE client gains focus, profile switching from the tray, an optional layout lock with a context-menu disable, bulk-add of all running clients to a cycle group, and remembering the last used profile at startup. I also carry the documentation and small fixes needed to keep those changes working for my setup.
+I made it for my multi-monitor fleet. The changes are limited to what I use: previews come forward when an EVE client gets focus, profiles can be switched from the tray, preview dragging and the right-click menu can be locked, a cycle group can take all running clients at once, and the last used profile is restored on startup. I also keep the documentation and fixes needed for my setup.
 
-I do not provide general user support, I do not accept feature requests outside my own use case, and I do not promise that upstream bugs are fixed here.
+I do not provide general support or take feature requests outside my own use case. If something is broken upstream, it belongs upstream.
 
-For the stable, supported version, use the upstream releases: [EveOPlus/eve-o-preview Releases](https://github.com/EveOPlus/eve-o-preview/releases). [Proopai/eve-o-preview](https://github.com/Proopai/eve-o-preview) is a separate upstream fork with its own releases; this repository does not claim to be its official successor.
+For the stable version, use the [EveOPlus/eve-o-preview releases](https://github.com/EveOPlus/eve-o-preview/releases). [Proopai/eve-o-preview](https://github.com/Proopai/eve-o-preview) is a separate fork with its own releases, and this repository is not its official successor.
 
 ## Why does this exist?
 
-I run several EVE clients across a multi-monitor setup, and I wanted previews to come forward only when an EVE client is active, without pinning them above every other application. I also switch profiles often and prefer to do that from the tray, and I wanted a way to stop an accidental drag or right-click from rearranging my layout.
+I run several EVE clients across multiple monitors. I wanted previews to come forward when an EVE client is active without staying above everything else. I also switch profiles a lot and prefer doing it from the tray, and I needed a way to stop accidental drags and right-clicks from rearranging my layout.
 
-Upstream is a good general-purpose tool; these are the small adjustments that fit the way I fly. I keep them here so I can update my build without maintaining a separate patch queue.
+Upstream covers the general case well. These are the adjustments I need for my own setup, kept here so I can update the build without juggling patches.
 
 ## Start here
 
@@ -285,7 +285,7 @@ In **Previews & layout → Advanced**, you can configure:
 | Snap previews together | Align previews and region editors to nearby edges and screen boundaries, with visible guides; hold Shift to bypass |
 | Delay before hiding | Wait before hiding previews outside EVE; enter seconds, rounded up to the next client check |
 | Resize limits | Set minimum and maximum width and height together; the current preview size adjusts to fit |
-| Client check interval | Check for clients and update preview properties every 300–1000 ms; this does **not** control game FPS or the live preview frame rate |
+| Client check interval | Check for clients and update preview properties every 300 to 1000 ms; this does **not** control game FPS or the live preview frame rate |
 | Use compatibility capture | Use slower still-image previews when live previews do not work; changing this recreates preview windows |
 | Login preview position | Set the position of login-screen previews, including negative coordinates for monitors above or left of the main display |
 
@@ -332,11 +332,11 @@ EVE-O switches focus between clients; it does not broadcast your keyboard or mou
 
 ## Issues and support
 
-This is a personal build. Open issues only for the changes listed in [What is this?](#what-is-this). Bugs in the upstream code should go to [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview/issues) or the relevant upstream fork. I may not respond to general support requests.
+This is my personal build. Open issues only for the changes listed in [What is this?](#what-is-this). Bugs in the upstream code should go to [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview/issues) or the relevant upstream fork. I may not answer general support requests.
 
 ## Code signing
 
-Release binaries are submitted to the [SignPath Foundation](https://signpath.org/) code-signing service. SignPath verifies that the artifact was built from this public repository by GitHub Actions and keeps the signing key in its HSM. The upstream EveOPlus signing certificate does not authenticate this personal build.
+Release binaries are submitted to the [SignPath Foundation](https://signpath.org/) code-signing service. SignPath verifies that the artifact was built from this public repository by GitHub Actions and keeps the signing key in its HSM. The upstream EveOPlus signing certificate does not authenticate this build.
 
 ## Contributing, credits and license
 
@@ -348,7 +348,7 @@ For source navigation and development instructions, start with [src/README.md](s
 - Original repository: [ulph/eve-o-preview-git](https://bitbucket.org/ulph/eve-o-preview-git) · [EVE forum thread](https://forums.eveonline.com/t/4202)
 - Current base for this personal build: [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview).
 - Separate upstream fork: [Proopai/eve-o-preview](https://github.com/Proopai/eve-o-preview). Check its README and license before using it as a base.
-- This personal build: maintained by me in this repository. All credit for the original concept and codebase goes to the people above; my changes are limited to the items listed in [What is this?](#what-is-this).
+- This build is maintained by me in this repository. All credit for the original concept and codebase goes to the people above; my changes are limited to the items in [What is this?](#what-is-this).
 
 ### License
 
