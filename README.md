@@ -1,5 +1,12 @@
 # EVE-O Preview (personal build)
 
+[![Build](https://github.com/Hijackery/eve-o-preview/actions/workflows/ci.yml/badge.svg)](https://github.com/Hijackery/eve-o-preview/actions/workflows/ci.yml)
+[![Windows package](https://github.com/Hijackery/eve-o-preview/actions/workflows/windows-build.yml/badge.svg)](https://github.com/Hijackery/eve-o-preview/actions/workflows/windows-build.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078D6.svg)](#platform-support)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4.svg)](https://dotnet.microsoft.com/)
+[![Personal build](https://img.shields.io/badge/build-personal-lightgrey.svg)](#what-is-this)
+
 > **Personal build.** This is my own EVE-O Preview fork for a multi-monitor fleet, based on the [EveOPlus/eve-o-preview](https://github.com/EveOPlus/eve-o-preview) line. It is not an official release. For the stable version, use the upstream [Releases](https://github.com/EveOPlus/eve-o-preview/releases).
 
 Keep an eye on your EVE characters and switch between them with a click or a hotkey. Arrange live previews, build character cycling groups, and tune frame rates and audio for your fleet.
@@ -27,6 +34,20 @@ For the stable version, use the [EveOPlus/eve-o-preview releases](https://github
 I run several EVE clients across multiple monitors. I wanted previews to come forward when an EVE client is active without staying above everything else. I also switch profiles a lot and prefer doing it from the tray, and I needed a way to stop accidental drags and right-clicks from rearranging my layout.
 
 Upstream covers the general case well. These are the adjustments I need for my own setup, kept here so I can update the build without juggling patches.
+
+## Highlights
+
+- Live previews of every EVE client.
+- Focus-aware raising, without pinning previews above everything.
+- Tray profile switching and an optional layout lock.
+- Cycle groups, hotkeys and login-client support.
+- FPS, audio and CPU controls for multiboxing.
+
+## Platform support
+
+Windows 10 and 11 on x64. The preview host uses Win32, DWM/DirectComposition, global input hooks and a native DLL injected into the EVE client. Linux and macOS are not supported.
+
+The settings UI is Avalonia and portable, but preview capture, focus switching, the tray, hotkeys and EVE client integration are Windows-specific. EVE on Linux and macOS would need a separate host backend; that work is not part of this build.
 
 ## Start here
 
@@ -356,4 +377,4 @@ Copyright © 2026 Aura Asuna for the EveOPlus line. This repository is distribut
 
 EVE Online and its associated names, logos, artwork and characters are the intellectual property of Fenris Creations (FC). EVE-O Preview is an independent project and is not affiliated with or endorsed by Fenris Creations (FC). All other trademarks belong to their respective owners.
 
-Privacy: [PRIVACY.md](PRIVACY.md).
+Privacy: [PRIVACY.md](PRIVACY.md). Security: [SECURITY.md](SECURITY.md).
